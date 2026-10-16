@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Agenda Clan Ingelbrecht</title>
+<meta name="description" content="Onbeschikbaarheid van de clan Ingelbrecht">
+<meta name="robots" content="noindex, nofollow">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📅</text></svg>">
+<style>
+  :root {
+    --bg: #f6f4ef;
+    --card: #ffffff;
+    --ink: #1f2a2e;
+    --muted: #5d6b70;
+    --accent: #2f6f62;
+    --accent-ink: #ffffff;
+    --line: #e2ddd3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #161b1d;
+      --card: #20272a;
+      --ink: #eef2f2;
+      --muted: #a3b0b4;
+      --accent: #5fb3a1;
+      --accent-ink: #0f1b18;
+      --line: #334044;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  header {
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 20px 16px 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: end;
+    justify-content: space-between;
+  }
+  h1 { margin: 0; font-size: clamp(1.4rem, 3vw, 2rem); letter-spacing: -0.01em; }
+  .sub { margin: 4px 0 0; color: var(--muted); font-size: 0.95rem; }
+  .views { display: flex; gap: 6px; }
+  .views button {
+    font: inherit;
+    font-size: 0.9rem;
+    padding: 8px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--card);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .views button[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  main {
+    flex: 1;
+    max-width: 1200px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 0 16px 16px;
+    display: flex;
+  }
+  .frame {
+    flex: 1;
+    background: #fff; /* Google-embed is altijd licht */
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    overflow: hidden;
+    min-height: 600px;
+    display: flex;
+  }
+  iframe { border: 0; width: 100%; flex: 1; min-height: 600px; }
+  footer {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.8rem;
+    padding: 0 16px 20px;
+  }
+</style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Onbeschikbaarheid Clan Ingelbrecht</h1>
+      <p class="sub">Wanneer iemand werkt, vergadert of weg is.</p>
+    </div>
+    <div class="views" role="group" aria-label="Weergave">
+      <button type="button" data-mode="WEEK">Week</button>
+      <button type="button" data-mode="MONTH">Maand</button>
+      <button type="button" data-mode="AGENDA">Lijst</button>
+    </div>
+  </header>
+  <main>
+    <div class="frame">
+      <iframe id="cal" title="Agenda Clan Ingelbrecht" loading="lazy"></iframe>
+    </div>
+  </main>
+  <footer>Wijzigingen doe je in Google Agenda; deze pagina werkt automatisch bij.</footer>
+
+<script>
+  const CALENDAR_ID = "c42085f04c424e9d98249cbbe7a1b28a6497cb188fad3a938f7c564f7da2084d@group.calendar.google.com";
+
+  const iframe = document.getElementById("cal");
+  const buttons = document.querySelectorAll(".views button");
+
+  function src(mode) {
+    const p = new URLSearchParams({
+      src: CALENDAR_ID,
+      ctz: "Europe/Brussels",
+      hl: "nl",
+      wkst: "2",          // week begint op maandag
+      mode: mode,
+      showTitle: "0",
+      showPrint: "0",
+      showCalendars: "0",
+      showTz: "0",
+      color: "#2f6f62"
+    });
+    return "https://calendar.google.com/calendar/embed?" + p.toString();
+  }
+
+  function setMode(mode) {
+    iframe.src = src(mode);
+    buttons.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.mode === mode)));
+    try { localStorage.setItem("agendaMode", mode); } catch (e) {}
+  }
+
+  buttons.forEach(b => b.addEventListener("click", () => setMode(b.dataset.mode)));
+
+  let start = window.matchMedia("(max-width: 640px)").matches ? "AGENDA" : "MONTH";
+  try { start = localStorage.getItem("agendaMode") || start; } catch (e) {}
+  setMode(start);
+</script>
+</body>
+</html>
